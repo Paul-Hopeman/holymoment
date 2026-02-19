@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Holy Moment - 일일 성경 말씀 묵상</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@300;400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --accent-color: #6d5d6e;
+            --text-main: #343a40;
+            --text-sub: #6c757d;
+            --glass-bg: rgba(255, 255, 255, 0.75);
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Pretendard', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%),
+                url('https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?auto=format&fit=crop&q=80&w=1920') center/cover no-repeat;
+            background-blend-mode: overlay;
+            min-height: 100vh;
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 30px;
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--shadow);
+            padding: 40px;
+            animation: fadeIn 1.2s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .logo {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 1.4rem;
+            color: var(--accent-color);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            display: block;
+            font-weight: 700;
+        }
+
+        .current-time {
+            font-size: 0.95rem;
+            color: var(--text-sub);
+            letter-spacing: 0.5px;
+        }
+
+        .verse-section {
+            margin-bottom: 40px;
+            text-align: center;
+        }
+
+        .verse-text {
+            font-family: 'Noto Serif KR', serif;
+            font-size: 1.7rem;
+            line-height: 1.7;
+            margin-bottom: 24px;
+            color: #1a202c;
+            word-break: keep-all;
+            padding: 0 10px;
+        }
+
+        .verse-ref {
+            font-size: 1.1rem;
+            color: var(--accent-color);
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .interpretation-box {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 28px;
+            border-radius: 20px;
+            margin-top: 35px;
+            font-size: 1.05rem;
+            line-height: 1.9;
+            color: #2d3748;
+            text-align: left;
+            border-left: 5px solid var(--accent-color);
+            transition: transform 0.3s ease;
+        }
+
+        .interpretation-box:hover {
+            transform: translateX(5px);
+        }
+
+        .interpretation-title {
+            font-weight: 700;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--accent-color);
+            font-size: 1.1rem;
+        }
+
+        .reflection-section {
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            padding-top: 35px;
+        }
+
+        .reflection-label {
+            font-weight: 700;
+            margin-bottom: 18px;
+            display: block;
+            color: var(--text-main);
+            font-size: 1.1rem;
+        }
+
+        textarea {
+            width: 100%;
+            height: 140px;
+            border-radius: 18px;
+            border: 1px solid rgba(0, 0, 0, 0.12);
+            background: rgba(255, 255, 255, 0.9);
+            padding: 20px;
+            font-family: inherit;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            resize: none;
+            outline: none;
+            transition: all 0.3s;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
+        }
+
+        textarea:focus {
+            border-color: var(--accent-color);
+            background: #fff;
+            box-shadow: 0 0 0 4px rgba(109, 93, 110, 0.1);
+        }
+
+        .save-btn {
+            width: 100%;
+            padding: 18px;
+            margin-top: 20px;
+            border: none;
+            border-radius: 18px;
+            background: var(--accent-color);
+            color: white;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(109, 93, 110, 0.2);
+        }
+
+        .save-btn:hover {
+            background: #5a4d5a;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(109, 93, 110, 0.3);
+        }
+
+        .save-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .history-btn {
+            background: none;
+            border: none;
+            color: var(--text-sub);
+            font-size: 0.95rem;
+            margin-top: 25px;
+            cursor: pointer;
+            text-decoration: none;
+            width: 100%;
+            text-align: center;
+            opacity: 0.8;
+            transition: opacity 0.3s, text-decoration 0.3s;
+        }
+
+        .history-btn:hover {
+            opacity: 1;
+            text-decoration: underline;
+        }
+
+        #historyModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(8px);
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 550px;
+            max-height: 85vh;
+            border-radius: 30px;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        .history-item {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 20px 0;
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-date {
+            font-size: 0.85rem;
+            color: var(--text-sub);
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            cursor: pointer;
+            font-size: 2rem;
+            color: #aaa;
+            line-height: 1;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            .verse-text {
+                font-size: 1.4rem;
+            }
+
+            .interpretation-box {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <header>
+            <span class="logo">Holy Moment</span>
+            <div id="dateDisplay" class="current-time"></div>
+        </header>
+
+        <main>
+            <section class="verse-section">
+                <p id="verseText" class="verse-text">말씀을 불러오는 중입니다...</p>
+                <p id="verseRef" class="verse-ref"></p>
+
+                <div class="interpretation-box">
+                    <span class="interpretation-title">📜 오늘의 묵상 가이드</span>
+                    <p id="interpretationText">잠시만 기다려 주세요.</p>
+                </div>
+            </section>
+
+            <section class="reflection-section">
+                <label class="reflection-label">💭 나의 묵상 기록하기</label>
+                <textarea id="reflectionInput" placeholder="이 말씀을 통해 느낀 점이나 기도를 적어보세요..."></textarea>
+                <button id="saveBtn" class="save-btn">묵상 저장하기</button>
+                <button id="showHistory" class="history-btn">지난 기록 보기</button>
+            </section>
+        </main>
+    </div>
+
+    <div id="historyModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 style="margin-bottom: 25px; font-family: 'Noto Serif KR', serif; color: var(--accent-color);">나의 묵상 기록
+            </h2>
+            <div id="historyList"></div>
+        </div>
+    </div>
+
+    <script>
+        const bibleData = [
+            { verse: "여호와는 나의 목자시니 내게 부족함이 없으리로다", ref: "시편 23:1", interp: "우리의 삶을 인도하시는 하나님을 전적으로 신뢰합시다. 주님이 계시기에 우리는 이미 충분합니다." },
+            { verse: "너는 마음을 다하여 여호와를 신뢰하고 네 명철을 의지하지 말라", ref: "잠언 3:5", interp: "나의 한계를 인정하고 주님의 지혜를 구하는 시간입니다. 내 생각보다 크신 주님의 길을 신뢰하세요." },
+            { verse: "내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라", ref: "빌립보서 4:13", interp: "나의 힘이 아닌, 주님이 주시는 힘으로 오늘을 살아갑시다. 주님은 당신의 능력이 되십니다." },
+            { verse: "두려워하지 말라 내가 너와 함께 함이라", ref: "이사야 41:10", interp: "고난 중에 있나요? 주님이 당신의 손을 꼭 잡고 계십니다. 주님의 임재 안에서 평안을 누리세요." },
+            { verse: "항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라", ref: "데살로니가전서 5:16-18", interp: "감사는 상황이 아닌 결단입니다. 오늘 한 가지 감사의 제목을 찾아 주님께 고백해 봅시다." },
+            { verse: "너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라", ref: "베드로전서 5:7", interp: "마음의 짐을 주님 앞에 내려놓으세요. 주님은 당신의 작은 신음 소리에도 귀를 기울이십니다." },
+            { verse: "내가 세상 끝날까지 너희와 항상 함께 있으리라", ref: "마태복음 28:20", interp: "외롭다고 느껴질 때 기억하세요. 세상 그 누구보다 당신을 잘 아시는 주님이 곁에 계십니다." },
+            { verse: "수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라", ref: "마태복음 11:28", interp: "참된 안식은 주님 품 안에 있습니다. 분주함을 내려놓고 주님 안에서 쉼을 얻으세요." },
+            { verse: "하나님은 사랑이심이라", ref: "요한일서 4:8", interp: "당신은 조건 없이 사랑받는 존재입니다. 그 사랑이 오늘 당신을 살게 하는 힘이 되길 소망합니다." },
+            { verse: "주 여호와를 앙망하는 자는 새 힘을 얻으리니", ref: "이사야 40:31", interp: "지치고 낙심될 때 주님을 바라보십시오. 주님이 부어주시는 새 힘이 당신을 일으켜 세울 것입니다." },
+            { verse: "주의 말씀은 내 발에 등이요 내 길에 빛이니이다", ref: "시편 119:105", interp: "어두운 길을 걷고 있다면 말씀을 등불 삼으십시오. 말씀이 당신의 갈 길을 환히 비춰줄 것입니다." },
+            { verse: "네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고", ref: "시편 37:5", interp: "불안한 미래를 주님께 맡겨 보십시오. 주님의 완벽한 타이밍에 주님의 뜻이 이루어질 것입니다." },
+            { verse: "평안을 너희에게 끼치노니 곧 나의 평안을 너희에게 주노라", ref: "요한복음 14:27", interp: "세상이 줄 수 없는 하늘의 평안이 당신의 마음을 덮기를 기도합니다. 폭풍 속에서도 평안하세요." },
+            { verse: "구하라 그리하면 너희에게 주실 것이요", ref: "마태복음 7:7", interp: "주님은 당신과 대화하기를 원하십니다. 마음의 소원을 신뢰함으로 아뢰어 보십시오." },
+            { verse: "우리가 알거니와 하나님을 사랑하는 자... 모든 것이 합력하여 선을 이루느니라", ref: "로마서 8:28", interp: "지금의 고통도 결국은 선한 도구가 될 것입니다. 주님의 큰 그림을 믿고 기다립시다." },
+            { verse: "너희는 세상의 빛이라", ref: "마태복음 5:14", interp: "당신을 통해 주님의 사랑이 흘러갑니다. 오늘 누군가에게 작은 빛이 되어주는 것은 어떨까요?" },
+            { verse: "오직 여호와를 기뻐하는 것이 너희의 힘이니라", ref: "느헤미야 8:10", interp: "진정한 에너지는 주님을 기뻐함에서 나옵니다. 오늘 하루 주님 안에서 행복을 찾으세요." },
+            { verse: "믿음은 바라는 것들의 실상이요 보이지 않는 것들의 증거니", ref: "히브리서 11:1", interp: "눈에 보이는 상황 너머를 보는 것이 믿음입니다. 약속을 주신 주님을 의지하며 나아갑시다." },
+            { verse: "마음이 청결한 자는 복이 있나니 그들이 하나님을 볼 것임이요", ref: "마태복음 5:8", interp: "복잡한 생각들을 정리하고 순전한 마음으로 주님 앞에 섭시다. 주님이 느껴질 것입니다." },
+            { verse: "서로 사랑하라 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라", ref: "요한복음 13:34", interp: "사랑은 가장 위대한 계명입니다. 오늘 만나는 사람들에게 따뜻한 말 한마디를 건네보세요." },
+            { verse: "나의 하나님이... 너희 모든 쓸 것을 채우시리라", ref: "빌립보서 4:19", interp: "부족함 때문에 염려하지 마십시오. 하늘 창고를 여시는 주님이 당신의 필요를 아십니다." },
+            { verse: "진리를 알지니 진리가 너희를 자유롭게 하리라", ref: "요한복음 8:32", interp: "당신을 억누르는 모든 생각에서 자유해지십시오. 주님의 진리가 당신을 자유케 합니다." },
+            { verse: "범사에 감사하며 기도하십시오", ref: "빌립보서 4:6", interp: "기도는 하늘의 문을 여는 열쇠입니다. 모든 일을 기도로 시작하고 기도로 마무리하십시오." },
+            { verse: "보라 내가 새 일을 행하리니 이제 나타낼 것이라", ref: "이사야 43:19", interp: "과거에 매여 있지 마십시오. 주님이 당신의 삶에 행하실 새로운 일을 기대하십시오." }
+        ];
+
+        function updateVerse() {
+            const now = new Date();
+            const hour = now.getHours();
+            const data = bibleData[hour % 24];
+
+            document.getElementById('dateDisplay').textContent = now.toLocaleDateString('ko-KR', {
+                year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
+            });
+
+            document.getElementById('verseText').textContent = data.verse;
+            document.getElementById('verseRef').textContent = data.ref;
+            document.getElementById('interpretationText').textContent = data.interp;
+
+            loadCurrentReflection(hour);
+        }
+
+        function loadCurrentReflection(hour) {
+            const dateStr = new Date().toDateString();
+            const key = `reflection_${dateStr}_${hour}`;
+            const saved = localStorage.getItem(key);
+            document.getElementById('reflectionInput').value = saved || "";
+        }
+
+        document.getElementById('saveBtn').onclick = function () {
+            const text = document.getElementById('reflectionInput').value;
+            if (!text.trim()) return alert("내용을 입력해주세요. ✨");
+
+            const now = new Date();
+            const hour = now.getHours();
+            const dateStr = now.toDateString();
+            const fullDate = now.toLocaleString();
+
+            const key = `reflection_${dateStr}_${hour}`;
+            const historyKey = "holy_moment_history";
+
+            localStorage.setItem(key, text);
+
+            let history = JSON.parse(localStorage.getItem(historyKey) || "[]");
+            history.unshift({
+                date: fullDate,
+                verse: document.getElementById('verseText').textContent,
+                content: text
+            });
+
+            if (history.length > 50) history.pop();
+            localStorage.setItem(historyKey, JSON.stringify(history));
+
+            alert("오늘의 묵상이 안전하게 저장되었습니다. 🙏 ✨");
+        };
+
+        const modal = document.getElementById('historyModal');
+        document.getElementById('showHistory').onclick = function () {
+            const history = JSON.parse(localStorage.getItem("holy_moment_history") || "[]");
+            const list = document.getElementById('historyList');
+            list.innerHTML = history.length ? "" : "<p style='color: #888; text-align: center; padding: 40px;'>기록된 묵상이 없습니다. 첫 묵상을 작성해 보세요!</p>";
+
+            history.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'history-item';
+                div.innerHTML = `
+                    <p class="history-date">${item.date}</p>
+                    <p style="font-weight: 700; font-size: 1rem; color: var(--accent-color); margin-bottom: 8px;">${item.verse}</p>
+                    <p style="font-size: 1.05rem; line-height: 1.6; color: #4a5568; white-space: pre-wrap;">${item.content}</p>
+                `;
+                list.appendChild(div);
+            });
+            modal.style.display = 'flex';
+        };
+
+        document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
+        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
+
+        updateVerse();
+        setInterval(updateVerse, 60000);
+
+    </script>
+</body>
+
+</html>
