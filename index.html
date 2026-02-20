@@ -115,12 +115,24 @@
 
         .verse-text {
             font-family: 'Noto Serif KR', serif;
-            font-size: 1.7rem;
-            line-height: 1.7;
-            margin-bottom: 24px;
+            font-size: 1.6rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
             color: #1a202c;
             word-break: keep-all;
             padding: 0 10px;
+        }
+
+        .verse-en {
+            font-family: 'Pretendard', sans-serif;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 24px;
+            color: var(--text-sub);
+            font-style: italic;
+            word-break: keep-all;
+            padding: 0 20px;
+            opacity: 0.9;
         }
 
         .verse-ref {
@@ -128,6 +140,16 @@
             color: var(--accent-color);
             font-weight: 600;
             opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        /* 푸터 버전 표시 */
+        .footer-info {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.8rem;
+            color: var(--text-sub);
+            opacity: 0.6;
         }
 
         /* 고도화 도구 모음 */
@@ -357,6 +379,7 @@
         <main>
             <section class="verse-section">
                 <p id="verseText" class="verse-text">말씀을 불러오는 중입니다...</p>
+                <p id="verseEn" class="verse-en"></p>
                 <p id="verseRef" class="verse-ref"></p>
 
                 <!-- 기능 버튼 레이어 -->
@@ -378,6 +401,10 @@
                 <button id="saveBtn" class="save-btn">묵상 저장하기</button>
                 <button id="showHistory" class="history-btn">지난 기록 보기</button>
             </section>
+
+            <div class="footer-info">
+                Holy Moment v2.1.0 | Paul & Hopeman Project
+            </div>
         </main>
     </div>
 
@@ -417,30 +444,30 @@
 
     <script>
         const bibleData = [
-            { verse: "여호와는 나의 목자시니 내게 부족함이 없으리로다", ref: "시편 23:1", interp: "우리의 삶을 인도하시는 하나님을 전적으로 신뢰합시다. 주님이 계시기에 우리는 이미 충분합니다." },
-            { verse: "너는 마음을 다하여 여호와를 신뢰하고 네 명철을 의지하지 말라", ref: "잠언 3:5", interp: "나의 한계를 인정하고 주님의 지혜를 구하는 시간입니다. 내 생각보다 크신 주님의 길을 신뢰하세요." },
-            { verse: "내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라", ref: "빌립보서 4:13", interp: "나의 힘이 아닌, 주님이 주시는 힘으로 오늘을 살아갑시다. 주님은 당신의 능력이 되십니다." },
-            { verse: "두려워하지 말라 내가 너와 함께 함이라", ref: "이사야 41:10", interp: "고난 중에 있나요? 주님이 당신의 손을 꼭 잡고 계십니다. 주님의 임재 안에서 평안을 누리세요." },
-            { verse: "항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라", ref: "데살로니가전서 5:16-18", interp: "감사는 상황이 아닌 결단입니다. 오늘 한 가지 감사의 제목을 찾아 주님께 고백해 봅시다." },
-            { verse: "너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라", ref: "베드로전서 5:7", interp: "마음의 짐을 주님 앞에 내려놓으세요. 주님은 당신의 작은 신음 소리에도 귀를 기울이십니다." },
-            { verse: "내가 세상 끝날까지 너희와 항상 함께 있으리라", ref: "마태복음 28:20", interp: "외롭다고 느껴질 때 기억하세요. 세상 그 누구보다 당신을 잘 아시는 주님이 곁에 계십니다." },
-            { verse: "수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라", ref: "마태복음 11:28", interp: "참된 안식은 주님 품 안에 있습니다. 분주함을 내려놓고 주님 안에서 쉼을 얻으세요." },
-            { verse: "하나님은 사랑이심이라", ref: "요한일서 4:8", interp: "당신은 조건 없이 사랑받는 존재입니다. 그 사랑이 오늘 당신을 살게 하는 힘이 되길 소망합니다." },
-            { verse: "주 여호와를 앙망하는 자는 새 힘을 얻으리니", ref: "이사야 40:31", interp: "지치고 낙심될 때 주님을 바라보십시오. 주님이 부어주시는 새 힘이 당신을 일으켜 세울 것입니다." },
-            { verse: "주의 말씀은 내 발에 등이요 내 길에 빛이니이다", ref: "시편 119:105", interp: "어두운 길을 걷고 있다면 말씀을 등불 삼으십시오. 말씀이 당신의 갈 길을 환히 비춰줄 것입니다." },
-            { verse: "네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고", ref: "시편 37:5", interp: "불안한 미래를 주님께 맡겨 보십시오. 주님의 완벽한 타이밍에 주님의 뜻이 이루어질 것입니다." },
-            { verse: "평안을 너희에게 끼치노니 곧 나의 평안을 너희에게 주노라", ref: "요한복음 14:27", interp: "세상이 줄 수 없는 하늘의 평안이 당신의 마음을 덮기를 기도합니다. 폭풍 속에서도 평안하세요." },
-            { verse: "구하라 그리하면 너희에게 주실 것이요", ref: "마태복음 7:7", interp: "주님은 당신과 대화하기를 원하십니다. 마음의 소원을 신뢰함으로 아뢰어 보십시오." },
-            { verse: "우리가 알거니와 하나님을 사랑하는 자... 모든 것이 합력하여 선을 이루느니라", ref: "로마서 8:28", interp: "지금의 고통도 결국은 선한 도구가 될 것입니다. 주님의 큰 그림을 믿고 기다립시다." },
-            { verse: "너희는 세상의 빛이라", ref: "마태복음 5:14", interp: "당신을 통해 주님의 사랑이 흘러갑니다. 오늘 누군가에게 작은 빛이 되어주는 것은 어떨까요?" },
-            { verse: "오직 여호와를 기뻐하는 것이 너희의 힘이니라", ref: "느헤미야 8:10", interp: "진정한 에너지는 주님을 기뻐함에서 나옵니다. 오늘 하루 주님 안에서 행복을 찾으세요." },
-            { verse: "믿음은 바라는 것들의 실상이요 보이지 않는 것들의 증거니", ref: "히브리서 11:1", interp: "눈에 보이는 상황 너머를 보는 것이 믿음입니다. 약속을 주신 주님을 의지하며 나아갑시다." },
-            { verse: "마음이 청결한 자는 복이 있나니 그들이 하나님을 볼 것임이요", ref: "마태복음 5:8", interp: "복잡한 생각들을 정리하고 순전한 마음으로 주님 앞에 섭시다. 주님이 느껴질 것입니다." },
-            { verse: "서로 사랑하라 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라", ref: "요한복음 13:34", interp: "사랑은 가장 위대한 계명입니다. 오늘 만나는 사람들에게 따뜻한 말 한마디를 건네보세요." },
-            { verse: "나의 하나님이... 너희 모든 쓸 것을 채우시리라", ref: "빌립보서 4:19", interp: "부족함 때문에 염려하지 마십시오. 하늘 창고를 여시는 주님이 당신의 필요를 아십니다." },
-            { verse: "진리를 알지니 진리가 너희를 자유롭게 하리라", ref: "요한복음 8:32", interp: "당신을 억누르는 모든 생각에서 자유해지십시오. 주님의 진리가 당신을 자유케 합니다." },
-            { verse: "범사에 감사하며 기도하십시오", ref: "빌립보서 4:6", interp: "기도는 하늘의 문을 여는 열쇠입니다. 모든 일을 기도로 시작하고 기도로 마무리하십시오." },
-            { verse: "보라 내가 새 일을 행하리니 이제 나타낼 것이라", ref: "이사야 43:19", interp: "과거에 매여 있지 마십시오. 주님이 당신의 삶에 행하실 새로운 일을 기대하십시오." }
+            { verse: "여호와는 나의 목자시니 내게 부족함이 없으리로다", verseEn: "The LORD is my shepherd; I shall not want.", ref: "시편 23:1", interp: "우리의 삶을 인도하시는 하나님을 전적으로 신뢰합시다. 주님이 계시기에 우리는 이미 충분합니다." },
+            { verse: "너는 마음을 다하여 여호와를 신뢰하고 네 명철을 의지하지 말라", verseEn: "Trust in the LORD with all thine heart; and lean not unto thine own understanding.", ref: "잠언 3:5", interp: "나의 한계를 인정하고 주님의 지혜를 구하는 시간입니다. 내 생각보다 크신 주님의 길을 신뢰하세요." },
+            { verse: "내게 능력 주시는 자 안에서 내가 모든 것을 할 수 있느니라", verseEn: "I can do all things through Christ which strengtheneth me.", ref: "빌립보서 4:13", interp: "나의 힘이 아닌, 주님이 주시는 힘으로 오늘을 살아갑시다. 주님은 당신의 능력이 되십니다." },
+            { verse: "두려워하지 말라 내가 너와 함께 함이라", verseEn: "Fear thou not; for I am with thee: be not dismayed; for I am thy God.", ref: "이사야 41:10", interp: "고난 중에 있나요? 주님이 당신의 손을 꼭 잡고 계십니다. 주님의 임재 안에서 평안을 누리세요." },
+            { verse: "항상 기뻐하라 쉬지 말고 기도하라 범사에 감사하라", verseEn: "Rejoice evermore. Pray without ceasing. In every thing give thanks.", ref: "데살로니가전서 5:16-18", interp: "감사는 상황이 아닌 결단입니다. 오늘 한 가지 감사의 제목을 찾아 주님께 고백해 봅시다." },
+            { verse: "너희 염려를 다 주께 맡기라 이는 그가 너희를 돌보심이라", verseEn: "Casting all your care upon him; for he careth for you.", ref: "베드로전서 5:7", interp: "마음의 짐을 주님 앞에 내려놓으세요. 주님은 당신의 작은 신음 소리에도 귀를 기울이십니다." },
+            { verse: "내가 세상 끝날까지 너희와 항상 함께 있으리라", verseEn: "and, lo, I am with you alway, even unto the end of the world.", ref: "마태복음 28:20", interp: "외롭다고 느껴질 때 기억하세요. 세상 그 누구보다 당신을 잘 아시는 주님이 곁에 계십니다." },
+            { verse: "수고하고 무거운 짐 진 자들아 다 내게로 오라 내가 너희를 쉬게 하리라", verseEn: "Come unto me, all ye that labour and are heavy laden, and I will give you rest.", ref: "마태복음 11:28", interp: "참된 안식은 주님 품 안에 있습니다. 분주함을 내려놓고 주님 안에서 쉼을 얻으세요." },
+            { verse: "하나님은 사랑이심이라", verseEn: "for God is love.", ref: "요한일서 4:8", interp: "당신은 조건 없이 사랑받는 존재입니다. 그 사랑이 오늘 당신을 살게 하는 힘이 되길 소망합니다." },
+            { verse: "주 여호와를 앙망하는 자는 새 힘을 얻으리니", verseEn: "But they that wait upon the LORD shall renew their strength.", ref: "이사야 40:31", interp: "지치고 낙심될 때 주님을 바라보십시오. 주님이 부어주시는 새 힘이 당신을 일으켜 세울 것입니다." },
+            { verse: "주의 말씀은 내 발에 등이요 내 길에 빛이니이다", verseEn: "Thy word is a lamp unto my feet, and a light unto my path.", ref: "시편 119:105", interp: "어두운 길을 걷고 있다면 말씀을 등불 삼으십시오. 말씀이 당신의 갈 길을 환히 비춰줄 것입니다." },
+            { verse: "네 길을 여호와께 맡기라 그를 의지하면 그가 이루시고", verseEn: "Commit thy way unto the LORD; trust also in him; and he shall bring it to pass.", ref: "시편 37:5", interp: "불안한 미래를 주님께 맡겨 보십시오. 주님의 완벽한 타이밍에 주님의 뜻이 이루어질 것입니다." },
+            { verse: "평안을 너희에게 끼치노니 곧 나의 평안을 너희에게 주노라", verseEn: "Peace I leave with you, my peace I give unto you.", ref: "요한복음 14:27", interp: "세상이 줄 수 없는 하늘의 평안이 당신의 마음을 덮기를 기도합니다. 폭풍 속에서도 평안하세요." },
+            { verse: "구하라 그리하면 너희에게 주실 것이요", verseEn: "Ask, and it shall be given you; seek, and ye shall find.", ref: "마태복음 7:7", interp: "주님은 당신과 대화하기를 원하십니다. 마음의 소원을 신뢰함으로 아뢰어 보십시오." },
+            { verse: "우리가 알거니와 하나님을 사랑하는 자... 모든 것이 합력하여 선을 이루느니라", verseEn: "And we know that all things work together for good to them that love God.", ref: "로마서 8:28", interp: "지금의 고통도 결국은 선한 도구가 될 것입니다. 주님의 큰 그림을 믿고 기다립시다." },
+            { verse: "너희는 세상의 빛이라", verseEn: "Ye are the light of the world.", ref: "마태복음 5:14", interp: "당신을 통해 주님의 사랑이 흘러갑니다. 오늘 누군가에게 작은 빛이 되어주는 것은 어떨까요?" },
+            { verse: "오직 여호와를 기뻐하는 것이 너희의 힘이니라", verseEn: "for the joy of the LORD is your strength.", ref: "느헤미야 8:10", interp: "진정한 에너지는 주님을 기뻐함에서 나옵니다. 오늘 하루 주님 안에서 행복을 찾으세요." },
+            { verse: "믿음은 바라는 것들의 실상이요 보이지 않는 것들의 증거니", verseEn: "Now faith is the substance of things hoped for, the evidence of things not seen.", ref: "히브리서 11:1", interp: "눈에 보이는 상황 너머를 보는 것이 믿음입니다. 약속을 주신 주님을 의지하며 나아갑시다." },
+            { verse: "마음이 청결한 자는 복이 있나니 그들이 하나님을 볼 것임이요", verseEn: "Blessed are the pure in heart: for they shall see God.", ref: "마태복음 5:8", interp: "복잡한 생각들을 정리하고 순전한 마음으로 주님 앞에 섭시다. 주님이 느껴질 것입니다." },
+            { verse: "서로 사랑하라 내가 너희를 사랑한 것 같이 너희도 서로 사랑하라", verseEn: "That ye love one another; as I have loved you, that ye also love one another.", ref: "요한복음 13:34", interp: "사랑은 가장 위대한 계명입니다. 오늘 만나는 사람들에게 따뜻한 말 한마디를 건네보세요." },
+            { verse: "나의 하나님이... 너희 모든 쓸 것을 채우시리라", verseEn: "But my God shall supply all your need according to his riches in glory.", ref: "빌립보서 4:19", interp: "부족함 때문에 염려하지 마십시오. 하늘 창고를 여시는 주님이 당신의 필요를 아십니다." },
+            { verse: "진리를 알지니 진리가 너희를 자유롭게 하리라", verseEn: "And ye shall know the truth, and the truth shall make you free.", ref: "요한복음 8:32", interp: "당신을 억누르는 모든 생각에서 자유해지십시오. 주님의 진리가 당신을 자유케 합니다." },
+            { verse: "범사에 감사하며 기도하십시오", verseEn: "Be careful for nothing; but in every thing by prayer and supplication with thanksgiving.", ref: "빌립보서 4:6", interp: "기도는 하늘의 문을 여는 열쇠입니다. 모든 일을 기도로 시작하고 기도로 마무리하십시오." },
+            { verse: "보라 내가 새 일을 행하리니 이제 나타낼 것이라", verseEn: "Behold, I will do a new thing; now it shall spring forth.", ref: "이사야 43:19", interp: "과거에 매여 있지 마십시오. 주님이 당신의 삶에 행하실 새로운 일을 기대하십시오." }
         ];
 
         let alarmSettings = JSON.parse(localStorage.getItem('holy_moment_alarms') || '[7, 8, 9, 12, 18, 20, 21, 22]');
@@ -456,6 +483,7 @@
             });
 
             document.getElementById('verseText').textContent = data.verse;
+            document.getElementById('verseEn').textContent = data.verseEn;
             document.getElementById('verseRef').textContent = data.ref;
             document.getElementById('interpretationText').textContent = data.interp;
 
@@ -493,7 +521,7 @@
                 return;
             }
             const utter = new SpeechSynthesisUtterance(
-                `${document.getElementById('verseText').textContent}. ${document.getElementById('verseRef').textContent}. 묵상 가이드입니다. ${document.getElementById('interpretationText').textContent}`
+                `${document.getElementById('verseText').textContent}. ${document.getElementById('verseEn').textContent}. ${document.getElementById('verseRef').textContent}. 묵상 가이드입니다. ${document.getElementById('interpretationText').textContent}`
             );
             utter.lang = 'ko-KR';
             utter.rate = 0.9;
@@ -502,7 +530,7 @@
 
         // --- 공유 및 복사 기능 ---
         function getShareMessage() {
-            return `[Holy Moment 오늘의 말씀]\n\n"${document.getElementById('verseText').textContent}"\n- ${document.getElementById('verseRef').textContent}\n\n오늘의 묵상: ${document.getElementById('interpretationText').textContent}`;
+            return `[Holy Moment 오늘의 말씀]\n\n"${document.getElementById('verseText').textContent}"\n("${document.getElementById('verseEn').textContent}")\n- ${document.getElementById('verseRef').textContent}\n\n오늘의 묵상: ${document.getElementById('interpretationText').textContent}`;
         }
 
         document.getElementById('copyBtn').onclick = () => {
@@ -564,16 +592,21 @@
             settingsModal.style.display = 'none';
         };
 
-        // --- 기타 모달 관련 ---
+        // --- 데이터베이스화된 기록 관리 ---
         const historyModal = document.getElementById('historyModal');
         document.getElementById('showHistory').onclick = () => {
             const history = JSON.parse(localStorage.getItem("holy_moment_history") || "[]");
             const list = document.getElementById('historyList');
-            list.innerHTML = history.length ? "" : "<p style='text-align: center; color: #888;'>기록이 없습니다.</p>";
+            list.innerHTML = history.length ? "" : "<p style='text-align: center; color: #888; padding: 40px;'>기록된 묵상이 없습니다.</p>";
+
             history.forEach(item => {
                 const div = document.createElement('div');
-                div.style = "border-bottom: 1px solid #eee; margin-bottom: 15px; padding-bottom: 10px;";
-                div.innerHTML = `<p style="font-size: 0.8rem; color: #888;">${item.date}</p><p style="font-weight: 700;">${item.verse}</p><p>${item.content}</p>`;
+                div.style = "border-bottom: 1px solid #eee; margin-bottom: 20px; padding-bottom: 15px; animation: fadeIn 0.5s ease-out;";
+                div.innerHTML = `
+                    <p style="font-size: 0.85rem; color: var(--accent-color); font-weight: 600; margin-bottom: 5px;">📅 ${item.fullTimestamp || item.date}</p>
+                    <p style="font-weight: 700; font-family: 'Noto Serif KR', serif; margin-bottom: 8px; font-size: 1.05rem;">${item.verse}</p>
+                    <p style="font-size: 1rem; line-height: 1.6; color: #444; white-space: pre-wrap; background: #fdfdfd; padding: 10px; border-radius: 8px;">${item.content}</p>
+                `;
                 list.appendChild(div);
             });
             historyModal.style.display = 'flex';
@@ -589,17 +622,33 @@
         document.getElementById('saveBtn').onclick = function () {
             const text = document.getElementById('reflectionInput').value;
             if (!text.trim()) return alert("내용을 입력해주세요. ✨");
+
             const now = new Date();
             const hour = now.getHours();
             const dateStr = now.toDateString();
+
+            // 상세 시간 포맷 (YYYY-MM-DD HH:mm:ss)
+            const fullTimestamp = now.getFullYear() + "-" +
+                String(now.getMonth() + 1).padStart(2, '0') + "-" +
+                String(now.getDate()).padStart(2, '0') + " " +
+                String(now.getHours()).padStart(2, '0') + ":" +
+                String(now.getMinutes()).padStart(2, '0') + ":" +
+                String(now.getSeconds()).padStart(2, '0');
+
             const key = `reflection_${dateStr}_${hour}`;
             localStorage.setItem(key, text);
 
             let history = JSON.parse(localStorage.getItem("holy_moment_history") || "[]");
-            history.unshift({ date: now.toLocaleString(), verse: document.getElementById('verseText').textContent, content: text });
-            if (history.length > 50) history.pop();
+            history.unshift({
+                date: now.toLocaleDateString(),
+                fullTimestamp: fullTimestamp, // 상세 시간 저장
+                verse: document.getElementById('verseText').textContent,
+                content: text
+            });
+
+            if (history.length > 100) history.pop(); // 데이터베이스 용량 확장
             localStorage.setItem("holy_moment_history", JSON.stringify(history));
-            alert("저장되었습니다. 🙏");
+            alert("상세 날짜와 함께 안전하게 저장되었습니다. 🙏 v2.1.0");
         };
 
         updateVerse();
