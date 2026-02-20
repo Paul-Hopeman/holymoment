@@ -1,0 +1,17 @@
+{
+    "name": "Holy Moment",
+    "short_name": "HolyMoment",
+    "description": "매 시간 하나님과 만나는 평온한 묵상의 시간",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#6d5d6e",
+    "icons": [
+        {
+            "src": "holy_moment_app_icon.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
