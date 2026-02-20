@@ -10,6 +10,9 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=Pretendard:wght@300;400;600&display=swap"
         rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#6d5d6e">
+    <link rel="apple-touch-icon" href="holy_moment_app_icon.png">
     <style>
         :root {
             --bg-color: #f8f9fa;
@@ -52,6 +55,23 @@
             box-shadow: var(--shadow);
             padding: 40px;
             animation: fadeIn 1.2s ease-out;
+            position: relative;
+        }
+
+        /* 설정 아이콘 */
+        .settings-trigger {
+            position: absolute;
+            top: 25px;
+            right: 25px;
+            font-size: 1.4rem;
+            cursor: pointer;
+            color: var(--accent-color);
+            transition: transform 0.3s ease;
+            z-index: 10;
+        }
+
+        .settings-trigger:hover {
+            transform: rotate(45deg);
         }
 
         @keyframes fadeIn {
@@ -89,7 +109,7 @@
         }
 
         .verse-section {
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             text-align: center;
         }
 
@@ -110,21 +130,50 @@
             opacity: 0.9;
         }
 
+        /* 고도화 도구 모음 */
+        .tool-bar {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+
+        .tool-btn {
+            background: white;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 1.2rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        }
+
+        .tool-btn:hover {
+            transform: translateY(-2px);
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .tool-btn:active {
+            transform: translateY(0);
+        }
+
         .interpretation-box {
             background: rgba(255, 255, 255, 0.4);
             padding: 28px;
             border-radius: 20px;
-            margin-top: 35px;
+            margin-top: 10px;
             font-size: 1.05rem;
             line-height: 1.9;
             color: #2d3748;
             text-align: left;
             border-left: 5px solid var(--accent-color);
-            transition: transform 0.3s ease;
-        }
-
-        .interpretation-box:hover {
-            transform: translateX(5px);
         }
 
         .interpretation-title {
@@ -140,6 +189,7 @@
         .reflection-section {
             border-top: 1px solid rgba(0, 0, 0, 0.08);
             padding-top: 35px;
+            margin-top: 35px;
         }
 
         .reflection-label {
@@ -152,7 +202,7 @@
 
         textarea {
             width: 100%;
-            height: 140px;
+            height: 120px;
             border-radius: 18px;
             border: 1px solid rgba(0, 0, 0, 0.12);
             background: rgba(255, 255, 255, 0.9);
@@ -163,7 +213,6 @@
             resize: none;
             outline: none;
             transition: all 0.3s;
-            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
         }
 
         textarea:focus {
@@ -184,17 +233,11 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            box-shadow: 0 4px 15px rgba(109, 93, 110, 0.2);
         }
 
         .save-btn:hover {
             background: #5a4d5a;
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(109, 93, 110, 0.3);
-        }
-
-        .save-btn:active {
-            transform: translateY(-1px);
+            transform: translateY(-2px);
         }
 
         .history-btn {
@@ -204,19 +247,13 @@
             font-size: 0.95rem;
             margin-top: 25px;
             cursor: pointer;
-            text-decoration: none;
             width: 100%;
             text-align: center;
             opacity: 0.8;
-            transition: opacity 0.3s, text-decoration 0.3s;
         }
 
-        .history-btn:hover {
-            opacity: 1;
-            text-decoration: underline;
-        }
-
-        #historyModal {
+        /* 공통 모달 스타일 */
+        .modal {
             display: none;
             position: fixed;
             top: 0;
@@ -239,23 +276,6 @@
             padding: 40px;
             overflow-y: auto;
             position: relative;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
-        }
-
-        .history-item {
-            border-bottom: 1px solid #f0f0f0;
-            padding: 20px 0;
-        }
-
-        .history-item:last-child {
-            border-bottom: none;
-        }
-
-        .history-date {
-            font-size: 0.85rem;
-            color: var(--text-sub);
-            margin-bottom: 8px;
-            font-weight: 500;
         }
 
         .close-modal {
@@ -265,11 +285,46 @@
             cursor: pointer;
             font-size: 2rem;
             color: #aaa;
-            line-height: 1;
         }
 
-        .close-modal:hover {
-            color: #333;
+        /* 알람 설정 특정 스타일 */
+        .alarm-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .hour-chip {
+            padding: 10px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s;
+        }
+
+        .hour-chip.active {
+            background: var(--accent-color);
+            color: white;
+            border-color: var(--accent-color);
+        }
+
+        .alarm-toggle-group {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .small-btn {
+            padding: 8px 12px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background: #f9f9f9;
+            font-size: 0.8rem;
+            cursor: pointer;
         }
 
         @media (max-width: 480px) {
@@ -281,8 +336,8 @@
                 font-size: 1.4rem;
             }
 
-            .interpretation-box {
-                padding: 20px;
+            .alarm-grid {
+                grid-template-columns: repeat(3, 1fr);
             }
         }
     </style>
@@ -291,6 +346,9 @@
 <body>
 
     <div class="container">
+        <!-- 설정 아이콘 -->
+        <div id="openSettings" class="settings-trigger" title="알람 설정">⚙️</div>
+
         <header>
             <span class="logo">Holy Moment</span>
             <div id="dateDisplay" class="current-time"></div>
@@ -300,6 +358,13 @@
             <section class="verse-section">
                 <p id="verseText" class="verse-text">말씀을 불러오는 중입니다...</p>
                 <p id="verseRef" class="verse-ref"></p>
+
+                <!-- 기능 버튼 레이어 -->
+                <div class="tool-bar">
+                    <button id="ttsBtn" class="tool-btn" title="말씀 읽기">🔊</button>
+                    <button id="shareBtn" class="tool-btn" title="카톡/지인 공유">🔗</button>
+                    <button id="copyBtn" class="tool-btn" title="복사하기">📄</button>
+                </div>
 
                 <div class="interpretation-box">
                     <span class="interpretation-title">📜 오늘의 묵상 가이드</span>
@@ -316,9 +381,34 @@
         </main>
     </div>
 
-    <div id="historyModal">
+    <!-- 알람 설정 모달 -->
+    <div id="settingsModal" class="modal">
         <div class="modal-content">
-            <span class="close-modal" id="closeModal">&times;</span>
+            <span class="close-modal" id="closeSettings">&times;</span>
+            <h2 style="margin-bottom: 20px; font-family: 'Noto Serif KR', serif; color: var(--accent-color);">알람 시스템 설정
+            </h2>
+            <p style="font-size: 0.95rem; color: #666; margin-bottom: 20px; line-height: 1.6;">
+                매 시간 정각에 말씀을 받아보실 시간대를 선택해 주세요. <br>
+                <span style="color: var(--accent-color); font-weight: 600;">* 브라우저 알림 권한이 필요합니다.</span>
+            </p>
+
+            <div class="alarm-toggle-group">
+                <button class="small-btn" onclick="toggleAllAlarms(true)">전체 선택</button>
+                <button class="small-btn" onclick="toggleAllAlarms(false)">전체 해제</button>
+            </div>
+
+            <div id="alarmGrid" class="alarm-grid">
+                <!-- 0시부터 23시까지 동적 생성 -->
+            </div>
+
+            <button id="saveSettings" class="save-btn" style="background: #2d3748;">설정 완료</button>
+        </div>
+    </div>
+
+    <!-- 기존 기록 모달 -->
+    <div id="historyModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeHistory">&times;</span>
             <h2 style="margin-bottom: 25px; font-family: 'Noto Serif KR', serif; color: var(--accent-color);">나의 묵상 기록
             </h2>
             <div id="historyList"></div>
@@ -353,6 +443,9 @@
             { verse: "보라 내가 새 일을 행하리니 이제 나타낼 것이라", ref: "이사야 43:19", interp: "과거에 매여 있지 마십시오. 주님이 당신의 삶에 행하실 새로운 일을 기대하십시오." }
         ];
 
+        let alarmSettings = JSON.parse(localStorage.getItem('holy_moment_alarms') || '[7, 8, 9, 12, 18, 20, 21, 22]');
+        let lastNotifiedHour = -1;
+
         function updateVerse() {
             const now = new Date();
             const hour = now.getHours();
@@ -367,6 +460,22 @@
             document.getElementById('interpretationText').textContent = data.interp;
 
             loadCurrentReflection(hour);
+            checkNotification(now);
+        }
+
+        // 알람 체크 로직
+        function checkNotification(now) {
+            const hour = now.getHours();
+            if (alarmSettings.includes(hour) && lastNotifiedHour !== hour) {
+                if (Notification.permission === "granted") {
+                    const data = bibleData[hour % 24];
+                    new Notification("✨ Holy Moment: 오늘의 말씀", {
+                        body: `"${data.verse}" \n지금 앱에서 묵상을 시작해 보세요.`,
+                        icon: 'https://images.unsplash.com/photo-1464822759023-fed622ff2c3b?w=128&h=128&fit=crop'
+                    });
+                    lastNotifiedHour = hour;
+                }
+            }
         }
 
         function loadCurrentReflection(hour) {
@@ -376,58 +485,134 @@
             document.getElementById('reflectionInput').value = saved || "";
         }
 
+        // --- 고도화 기능: TTS (말씀 읽기) ---
+        let synth = window.speechSynthesis;
+        document.getElementById('ttsBtn').onclick = () => {
+            if (synth.speaking) {
+                synth.cancel();
+                return;
+            }
+            const utter = new SpeechSynthesisUtterance(
+                `${document.getElementById('verseText').textContent}. ${document.getElementById('verseRef').textContent}. 묵상 가이드입니다. ${document.getElementById('interpretationText').textContent}`
+            );
+            utter.lang = 'ko-KR';
+            utter.rate = 0.9;
+            synth.speak(utter);
+        };
+
+        // --- 공유 및 복사 기능 ---
+        function getShareMessage() {
+            return `[Holy Moment 오늘의 말씀]\n\n"${document.getElementById('verseText').textContent}"\n- ${document.getElementById('verseRef').textContent}\n\n오늘의 묵상: ${document.getElementById('interpretationText').textContent}`;
+        }
+
+        document.getElementById('copyBtn').onclick = () => {
+            navigator.clipboard.writeText(getShareMessage()).then(() => alert("복사되었습니다! ✨"));
+        };
+
+        document.getElementById('shareBtn').onclick = () => {
+            if (navigator.share) {
+                navigator.share({ title: 'Holy Moment', text: getShareMessage(), url: window.location.href });
+            } else { alert("복사 기능을 이용해 주세요! 😊"); }
+        };
+
+        // --- 알람 설정 UI 관련 ---
+        const settingsModal = document.getElementById('settingsModal');
+        const alarmGrid = document.getElementById('alarmGrid');
+
+        function initAlarmUI() {
+            alarmGrid.innerHTML = '';
+            for (let i = 0; i < 24; i++) {
+                const chip = document.createElement('div');
+                chip.className = `hour-chip ${alarmSettings.includes(i) ? 'active' : ''}`;
+                chip.textContent = `${i}시`;
+                chip.onclick = () => {
+                    if (alarmSettings.includes(i)) {
+                        alarmSettings = alarmSettings.filter(h => h !== i);
+                        chip.classList.remove('active');
+                    } else {
+                        alarmSettings.push(i);
+                        chip.classList.add('active');
+                    }
+                };
+                alarmGrid.appendChild(chip);
+            }
+        }
+
+        function toggleAllAlarms(select) {
+            if (select) {
+                alarmSettings = Array.from({ length: 24 }, (_, i) => i);
+            } else {
+                alarmSettings = [];
+            }
+            initAlarmUI();
+        }
+
+        document.getElementById('openSettings').onclick = () => {
+            initAlarmUI();
+            settingsModal.style.display = 'flex';
+        };
+
+        document.getElementById('saveSettings').onclick = () => {
+            localStorage.setItem('holy_moment_alarms', JSON.stringify(alarmSettings));
+            if (alarmSettings.length > 0 && Notification.permission !== "granted") {
+                Notification.requestPermission().then(permission => {
+                    if (permission === "granted") alert("알람 설정이 저장되었으며, 알림 권한이 승인되었습니다. 🙏");
+                });
+            } else {
+                alert("알람 설정이 안전하게 저장되었습니다. ✨");
+            }
+            settingsModal.style.display = 'none';
+        };
+
+        // --- 기타 모달 관련 ---
+        const historyModal = document.getElementById('historyModal');
+        document.getElementById('showHistory').onclick = () => {
+            const history = JSON.parse(localStorage.getItem("holy_moment_history") || "[]");
+            const list = document.getElementById('historyList');
+            list.innerHTML = history.length ? "" : "<p style='text-align: center; color: #888;'>기록이 없습니다.</p>";
+            history.forEach(item => {
+                const div = document.createElement('div');
+                div.style = "border-bottom: 1px solid #eee; margin-bottom: 15px; padding-bottom: 10px;";
+                div.innerHTML = `<p style="font-size: 0.8rem; color: #888;">${item.date}</p><p style="font-weight: 700;">${item.verse}</p><p>${item.content}</p>`;
+                list.appendChild(div);
+            });
+            historyModal.style.display = 'flex';
+        };
+
+        document.getElementById('closeSettings').onclick = () => settingsModal.style.display = 'none';
+        document.getElementById('closeHistory').onclick = () => historyModal.style.display = 'none';
+        window.onclick = (e) => {
+            if (e.target == settingsModal) settingsModal.style.display = 'none';
+            if (e.target == historyModal) historyModal.style.display = 'none';
+        };
+
         document.getElementById('saveBtn').onclick = function () {
             const text = document.getElementById('reflectionInput').value;
             if (!text.trim()) return alert("내용을 입력해주세요. ✨");
-
             const now = new Date();
             const hour = now.getHours();
             const dateStr = now.toDateString();
-            const fullDate = now.toLocaleString();
-
             const key = `reflection_${dateStr}_${hour}`;
-            const historyKey = "holy_moment_history";
-
             localStorage.setItem(key, text);
 
-            let history = JSON.parse(localStorage.getItem(historyKey) || "[]");
-            history.unshift({
-                date: fullDate,
-                verse: document.getElementById('verseText').textContent,
-                content: text
-            });
-
+            let history = JSON.parse(localStorage.getItem("holy_moment_history") || "[]");
+            history.unshift({ date: now.toLocaleString(), verse: document.getElementById('verseText').textContent, content: text });
             if (history.length > 50) history.pop();
-            localStorage.setItem(historyKey, JSON.stringify(history));
-
-            alert("오늘의 묵상이 안전하게 저장되었습니다. 🙏 ✨");
+            localStorage.setItem("holy_moment_history", JSON.stringify(history));
+            alert("저장되었습니다. 🙏");
         };
-
-        const modal = document.getElementById('historyModal');
-        document.getElementById('showHistory').onclick = function () {
-            const history = JSON.parse(localStorage.getItem("holy_moment_history") || "[]");
-            const list = document.getElementById('historyList');
-            list.innerHTML = history.length ? "" : "<p style='color: #888; text-align: center; padding: 40px;'>기록된 묵상이 없습니다. 첫 묵상을 작성해 보세요!</p>";
-
-            history.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'history-item';
-                div.innerHTML = `
-                    <p class="history-date">${item.date}</p>
-                    <p style="font-weight: 700; font-size: 1rem; color: var(--accent-color); margin-bottom: 8px;">${item.verse}</p>
-                    <p style="font-size: 1.05rem; line-height: 1.6; color: #4a5568; white-space: pre-wrap;">${item.content}</p>
-                `;
-                list.appendChild(div);
-            });
-            modal.style.display = 'flex';
-        };
-
-        document.getElementById('closeModal').onclick = () => modal.style.display = 'none';
-        window.onclick = (e) => { if (e.target == modal) modal.style.display = 'none'; };
 
         updateVerse();
-        setInterval(updateVerse, 60000);
+        setInterval(updateVerse, 30000); // 30초마다 체크
 
+        // PWA 서비스 워커 등록
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('Service Worker registered!'))
+                    .catch(err => console.log('SW registration failed:', err));
+            });
+        }
     </script>
 </body>
 
